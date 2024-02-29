@@ -2,6 +2,8 @@
     pageEncoding="UTF-8" import="java.util.*, bbs.model.*" errorPage="/error.jsp"%>
     <!-- 모든 페이지마다 errorPage="/error.jsp" 지정 <=불편함 -->
 <jsp:include page="/inc/top.jsp" />
+<jsp:useBean id="dao" class="bbs.model.BbsDAO" scope="session"/>
+
 		<!-- content -->
 		<div class="container">
 			<h1>Board List Page</h1>
@@ -18,7 +20,7 @@
 				<!-- --------------- -->
 				<%
 					//BbsDAO생성 후 listBbs()호출 ==> 반환받은 값을 반복문 돌려 출력
-					BbsDAO dao = new BbsDAO();
+					// BbsDAO dao = new BbsDAO(); ==> useBean액션을 이용해서 session scope로 생성해보자
 					ArrayList<BbsVO> arr = dao.listBbs();
 					if(arr==null || arr.size()==0){
 						%>

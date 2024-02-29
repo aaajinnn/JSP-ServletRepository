@@ -1,7 +1,14 @@
 package member.model;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 import common.db.DBUtil;
 
@@ -13,6 +20,17 @@ public class MemberDAO {
 	private PreparedStatement ps;
 	private ResultSet rs;
 
+	private DataSource ds;
+
+	public MemberDAO() {
+		try {
+			Context ctx = new InitialContext();
+			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/myoracle");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/** 회원가입 처리 - C (INSERT) */
 	// INSERT, DELETE, UPDATE는 반환타입을 int or boolean 사용
 	public int insertNumber(MemberVO user) throws SQLException {
@@ -20,7 +38,8 @@ public class MemberDAO {
 		// try~catch보단 throws하여 넘겨주는것이 좋음
 		// => 이벤트핸들러가 예외를 받아 화면에 넘겨줌
 		try {
-			con = DBUtil.getCon();
+			// con = DBUtil.getCon();
+			con = ds.getConnection();
 
 			String sql = "INSERT INTO java_member(id, name, pw, tel, indate)";
 			sql += " VALUES (?, ?, ?, ?, sysdate)";
@@ -42,7 +61,9 @@ public class MemberDAO {
 	/** 회원 탈퇴 처리 - D (DELETE) */
 	public int deleteMember(String id) throws SQLException {
 		try {
-			con = DBUtil.getCon();
+			// con = DBUtil.getCon();
+			con = ds.getConnection();
+
 			// delete문 작성
 			String sql = "DELETE FROM java_member WHERE id=?";
 
@@ -81,7 +102,9 @@ public class MemberDAO {
 	public ArrayList<MemberVO> selectAll() throws SQLException {
 		// MemberVO 하나가 행 하나, ArrayList에 차곡차곡 담아 테이블이 됨
 		try {
-			con = DBUtil.getCon();
+			// con = DBUtil.getCon();
+			con = ds.getConnection();
+
 			String sql = "SELECT * FROM java_member ORDER BY indate DESC";
 			ps = con.prepareStatement(sql);
 			// ? 가없으면 setting X
@@ -98,7 +121,9 @@ public class MemberDAO {
 	/** PK - id로 회원정보 가져오기 - R(SELECT) => 단일행을 반환하는 경우 */
 	public MemberVO findById(String id) throws SQLException {
 		try {
-			con = DBUtil.getCon();
+			// con = DBUtil.getCon();
+			con = ds.getConnection();
+
 			String sql = "SELECT * FROM java_member WHERE id=?";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, id);
@@ -134,7 +159,9 @@ public class MemberDAO {
 	/** 회원정보 수정 처리 - U (update) */
 	public int updateMember(MemberVO user) throws SQLException {
 		try {
-			con = DBUtil.getCon();
+			// con = DBUtil.getCon();
+			con = ds.getConnection();
+
 			String sql = "UPDATE java_member SET name=?, tel=?, pw=? WHERE id=?";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, user.getName());
