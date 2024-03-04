@@ -183,7 +183,7 @@ public class MemberDAO {
 			if (ps != null)
 				ps.close();
 			if (con != null)
-				con.close();
+				con.close(); // DBCP에 커넥션 반납
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

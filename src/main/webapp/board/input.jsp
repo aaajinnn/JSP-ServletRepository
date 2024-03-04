@@ -5,6 +5,10 @@
 	<!-- -------------------------------------------------- -->
 	<script src="../js/bbs.js"></script>
 	<!-- -------------------------------------------------- -->
+	<%
+		String loginId = "";
+		loginId = (String)session.getAttribute("loginId");
+	%>
 		<!-- content -->
 		<div class="container">
 			<h1>Borad Write Page</h1>
@@ -19,7 +23,11 @@
 				<tr>
 					<th>작성자</th>
 					<td>
-						<input type="text" name="writer" id="writer" placeholder="Writer">
+						<input type="text" name="writer" id="writer" readonly
+						<% if(loginId!=null){ // 세션에 넣은 값이 없으면 null%>
+							value="<%=loginId %>"
+						<%} %>
+						placeholder="Writer">
 					</td>
 				</tr>
 				<tr>
